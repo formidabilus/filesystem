@@ -1,6 +1,6 @@
 package com.rtjvm.scala.oop.filesystem
 
-import com.rtjvm.scala.oop.Files.Directory
+import com.rtjvm.scala.oop.files.Directory
 
 class State(val root: Directory, val wd: Directory, val output: String) {
 

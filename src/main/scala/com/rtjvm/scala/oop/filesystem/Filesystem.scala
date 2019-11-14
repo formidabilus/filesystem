@@ -2,7 +2,7 @@ package com.rtjvm.scala.oop.filesystem
 
 import java.util.Scanner
 
-import com.rtjvm.scala.oop.Files.Directory
+import com.rtjvm.scala.oop.files.Directory
 import com.rtjvm.scala.oop.commands.Command
 
 object Filesystem  extends App {
