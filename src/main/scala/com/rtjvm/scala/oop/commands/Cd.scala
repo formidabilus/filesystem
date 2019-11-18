@@ -49,10 +49,63 @@ class Cd(dir: String) extends Command {
 
     }
 
+    @tailrec
+    def collapseRelativeTokens(path: List[String], result: List[String]): List[String] = {
+      /*
+        /a/b = ["a", "b"]
+
+        path.isEmpty?
+          cRT(["b"], result = List :+ "a" = ["a"])
+            path.isEmpty?
+              cRT([], result = ["a"] :+ "b" = ["a", "b"])
+                path.isEmpty?
+
+        /a/.. => ["a", ".."]
+        path.isEmpty?
+          cRT([".."], [] :+ "a" = ["a"])
+            path.isEmpty?
+              cRT([], []) = []
+
+        /a/b.. => ["a", "b", ".."]
+        path.isEmpty?
+          cRT(["b", ".."], ["a"]
+            ?
+              cRT([".."], ["a", "b"])
+                ?
+                  cRT([], ["a"])
+
+        /a/b/c/..
+            ...
+            cRT(["..", ["a","b","c"])
+              ?
+                cRT([], ["a", "b"])
+       */
+      if (path.isEmpty) result
+      else if(".".equals(path.head)) collapseRelativeTokens(path.tail, result)
+      else if("..".equals(path.head)) {
+        if (result.isEmpty) null
+        else collapseRelativeTokens(path.tail, result.init)
+      }
+      else collapseRelativeTokens(path.tail, result :+ path.head)
+    }
     // 1. tokens
     val tokens: List[String] = path.substring(1).split(Directory.SEPARATOR).toList
 
+    // 1.5 eliminate/collapse relative tokens
+
+    /*
+      ["a", "."] => ["a"]
+      /a/b/./. => ["a", "b", ".", "."] => ["a", "b"]
+
+      /a/../ => ["a", ".."] => []
+      /a/b/.. => ["a", "b", ".."] => ["a"]
+     */
+
+    val newTokens = collapseRelativeTokens(tokens, List())
+
     // 2. navigate to the correct entry
-    findEntryHelper(root, tokens)
+    if (newTokens == null) null
+    else
+    findEntryHelper(root, newTokens)
   }
 }
