@@ -4,7 +4,7 @@ import java.nio.file.FileSystemException
 
 import com.rtjvm.scala.oop.filesystem.FilesystemException
 
-class File(override val parentPath: String, override val name: String, contents: String)
+class File(override val parentPath: String, override val name: String, val contents: String)
   extends DirEntry(parentPath, name) {
 
   override def asDirectory: Directory =
